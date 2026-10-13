@@ -1,0 +1,6 @@
+# 维护说明
+
+- 写作规则只改 `references/中文写作规则.md` 一处。SKILL.md 只指向它，不复述。
+- 页面结构只改 `assets/page-template.html`；样式每次现做，模板里的 CSS 只是起点。改了区块 id，同步改 `scripts/check_page.py` 的 `REQUIRED` 和 `PLACEHOLDERS`。
+- 改完跑：`python3 scripts/check_page.py examples/乾卦六爻/page.html`，应输出 OK。
+- 规则改编自 danyuchn/asd-ste100-skill（MIT），保留 LICENSE 里的原作者署名。

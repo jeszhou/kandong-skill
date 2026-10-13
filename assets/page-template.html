@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 填：标题，2–6 个字最好 -->
+<title>标题</title>
+<style>
+/* 这套样式只是起点：每次按内容气质重新设计，整块替换。保留下面用到的 class 和 id 即可 */
+:root{--bg:#f5f1e8;--card:#fffdf8;--ink:#2a2622;--mute:#7d756c;--line:#e4dccf;--accent:#1f8f78;--accent-soft:#e1f1ec;--warn:#c4573a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1a17;--card:#26231f;--ink:#ece6dc;--mute:#a39a8e;--line:#3a352f;--accent:#4cc3a6;--accent-soft:#20372f;--warn:#e7805f}}
+:root[data-theme="dark"]{--bg:#1c1a17;--card:#26231f;--ink:#ece6dc;--mute:#a39a8e;--line:#3a352f;--accent:#4cc3a6;--accent-soft:#20372f;--warn:#e7805f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.75 "PingFang SC","Hiragino Sans GB","Noto Sans SC",system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:32px;line-height:1.3;margin:0 0 6px}
+.q{color:var(--mute);margin:0 0 28px}
+h2{font-size:20px;margin:40px 0 14px;padding-left:12px;border-left:4px solid var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:12px 0}
+#kd-conclusion .card{border:2px solid var(--accent);font-size:19px}
+#kd-conclusion p{margin:6px 0}
+.item h3{font-size:17px;margin:0 0 10px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{font:inherit;font-size:15px;padding:6px 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.opts button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+#kd-copy{font:inherit;font-weight:600;margin-top:10px;padding:10px 22px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer}
+#kd-map svg{width:100%;height:auto;display:block}
+#kd-map svg text{fill:var(--ink);font-family:inherit}
+dl{margin:0} dt{font-weight:700;margin-top:10px} dd{margin:0 0 4px;color:var(--mute)}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 20px;margin:10px 0}
+details[open]{border-color:var(--accent)}
+summary{cursor:pointer;font-weight:600}
+details ul{margin:8px 0 4px;padding-left:20px}
+#kd-source pre{white-space:pre-wrap;font-size:14px;color:var(--mute)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;opacity:0;transition:opacity .2s}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<main>
+<!-- 填：标题 + 第 1 步写下的读者问题 -->
+<h1>标题</h1>
+<p class="q">你想知道：读者问题</p>
+
+<!-- 结论：最多 3 句，放在第一屏 -->
+<section id="kd-conclusion">
+  <h2>结论</h2>
+  <div class="card">
+    <p>第一句结论。</p>
+  </div>
+</section>
+
+<!-- 待定：每件事一个 .item；data-q 写问题，按钮写选项。没有待定事项就删掉整个 section -->
+<section id="kd-decide">
+  <h2>要你定的</h2>
+  <div class="card item" data-q="问题一">
+    <h3>1. 问题一？</h3>
+    <div class="opts"><button>选项 A</button><button>选项 B</button></div>
+  </div>
+  <button id="kd-copy">复制回复</button>
+</section>
+
+<!-- 全局图：内联 SVG，图里的名字和下面的概念表一字不差。颜色用 var(--accent) / var(--line) / var(--ink) -->
+<section id="kd-map">
+  <h2>全局图</h2>
+  <div class="card">
+    <svg viewBox="0 0 800 300" role="img" aria-label="全局图说明">
+      <rect x="40" y="110" width="200" height="80" rx="12" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="140" y="156" text-anchor="middle" font-size="20">概念 A</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 概念：每个概念只一个名字；别名写在解释后面 -->
+<section id="kd-concepts">
+  <h2>概念</h2>
+  <div class="card"><dl>
+    <dt>概念 A</dt><dd>一句解释。</dd>
+  </dl></div>
+</section>
+
+<!-- 细节：按概念分组，默认收起 -->
+<section id="kd-details">
+  <h2>细节</h2>
+  <details><summary>概念 A</summary><ul><li>细节一。</li></ul></details>
+</section>
+
+<!-- 原文：完整放进来，默认收起 -->
+<section id="kd-source">
+  <details><summary>原文</summary><pre>原文全文</pre></details>
+</section>
+</main>
+<div class="toast" id="kd-toast">已复制，粘贴回对话就行</div>
+<script>
+document.querySelectorAll('.opts').forEach(g=>g.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
+}));
+const copy=document.getElementById('kd-copy');
+if(copy) copy.addEventListener('click',async()=>{
+  const lines=[...document.querySelectorAll('#kd-decide .item')].map((it,i)=>{
+    const on=it.querySelector('button[aria-pressed="true"]');
+    return `${i+1}. ${it.dataset.q}：${on?on.textContent:'（没选）'}`;
+  });
+  const text=lines.join('\n');
+  try{await navigator.clipboard.writeText(text)}catch(_){prompt('复制下面这段：',text);return}
+  const t=document.getElementById('kd-toast'); t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1600);
+});
+</script>
+</body>
+</html>
